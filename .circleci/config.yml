@@ -1,0 +1,30 @@
+version: 2.1
+
+workflows:
+  build:
+    jobs:
+      - build:
+          context:ctx
+
+jobs:
+  build:
+    docker:
+      - image: circleci/golang
+        auth:
+          username: $DOCKERHUB_USER
+          password: $DOCKERHUB_PWD  # context / project UI env-var reference
+    steps:
+      - checkout
+      - run: go build
+      - run:
+          name: "Create a temp directory for artifacts"
+          command: |
+            mkdir -p /tmp/artifacts
+      - run:
+          command: |
+            echo $DOCKERHUB_USER
+            go test -coverprofile c.out
+            go tool cover -html c.out -o coverage.html
+            mv coverage.html /tmp/artifacts
+      - store_artifacts:
+          path: /tmp/artifacts

@@ -1,0 +1,12 @@
+language: go
+
+env:
+  - GO111MODULE=on
+
+before_install:
+  - echo ls -l
+
+script: go get github.com/azerg/golang_ci_cd_skeleton && go test
+
+notifications:
+  email: false
